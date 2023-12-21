@@ -1,6 +1,7 @@
 import random
 import csv
 
+
 def waveLength(x1, x2, y1, y2):
     return ((x2 - x1) ** 2 + (y2 - y1) ** 2) ** 0.5
 
@@ -68,14 +69,44 @@ def checkRules(point1, point2, point3, point4, point5, point6, point7, point8, p
 
 
 elliott_waves = []
+not_elliott_waves = []
 for i in range(0, 70000000):
     # Generate an array of 9 random elements
-    random_array = [round(random.uniform(0, 10), 2) for _ in range(9)]
-    point1, point2, point3, point4, point5, point6, point7, point8, point9 = random_array[0], random_array[1], random_array[2], random_array[3], random_array[4], random_array[5], random_array[6], random_array[7], random_array[8]
+    random_array = [round(random.uniform(20, 400), 4) for _ in range(9)]
+    point1, point2, point3, point4, point5, point6, point7, point8, point9 = random_array[0], random_array[1], \
+                                                                             random_array[2], random_array[3], \
+                                                                             random_array[4], random_array[5], \
+                                                                             random_array[6], random_array[7], \
+                                                                             random_array[8]
     if checkRules(point1, point2, point3, point4, point5, point6, point7, point8, point9):
         elliott_waves.append(random_array)
-print(elliott_waves)
+    else:
+        not_elliott_waves.append(random_array)
+# print(elliott_waves)
 print("elliott waves generated :", len(elliott_waves))
-with open('output.csv', mode='w', newline='') as file:
+print("Not elliott waves generated :", len(not_elliott_waves))
+# with open('output2.csv', mode='w', newline='') as file:
+#     writer = csv.writer(file)
+#     writer.writerows(elliott_waves)
+
+# Select 8000 random entries from not_elliott_waves
+random_not_elliott_waves = random.sample(not_elliott_waves, 8000)
+
+# Add column names
+column_names = ["feature 1", "feature 2", "feature 3", "feature 4", "feature 5", "feature 6", "feature 7", "feature 8",
+                "feature 9", "elliott wave"]
+
+# Write to CSV file
+with open('output3.csv', mode='w', newline='') as file:
     writer = csv.writer(file)
-    writer.writerows(elliott_waves)
+
+    # Write column names to the CSV file
+    writer.writerow(column_names)
+
+    # Write elliott waves with binary value 1
+    for row in elliott_waves:
+        writer.writerow(row + [1])  # Append 1 for elliott waves
+
+    # Write random not_elliott_waves with binary value 0
+    for row in random_not_elliott_waves:
+        writer.writerow(row + [0])  # Append 0 for not_elliott_waves
